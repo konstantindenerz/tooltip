@@ -4,6 +4,11 @@ $ ()->
   window.lab.ui = window.lab.ui or {}
   tooltipSelector = '.tooltip'
   tooltipContentSelector = '.tooltip-content'
+  tooltipAlignAttribute = 'data-tooltip-align'
+  defaultWidth = 300
+  distance = 20
+  alignSet = ['top', 'right', 'left', 'bottom']
+
   # HTML factory
   generator =
     tooltip: '<div class="tooltip"></div>'
@@ -14,15 +19,59 @@ $ ()->
     $tooltip.html content
     $tooltip.appendTo $parent
     # TODO: fade in animation
+    $tooltip
   hover = ()->
     $target = $ this
     $content = $target.find tooltipContentSelector
-    create $content.html()
+    $tooltip = create $content.html()
+    layout.update $tooltip, $target
   leave = ()->
     $tooltip = $ tooltipSelector
     # TODO: fade out animation
     $tooltip.remove()
 
+  layout =
+    update: ($tooltip, $target)->
+      w =
+        width: window.innerWidth # window.document.body.clientWidth
+        height: window.innerHeight # window.document.body.clientHeight
+      client =
+        width: window.document.body.clientWidth
+        height: window.document.body.clientHeight
+      tooltipWidth = defaultWidth
+      if client.width < defaultWidth # then correct the tooltip width
+        tooltipWidth = client.width
+        $tooltip.width tooltipWidth
+      # returns an object with two properties: width, height
+      getSize = (object)->
+        width:
+          object.width()
+        height:
+          object.height()
+      size =
+      getAlignment = (offset, tooltipSize, targetSize, client)->
+        console.log offset, tooltipSize, targetSize, client
+        align = undefined
+        if tooltipSize.height + distance <= offset.top
+          align = 'top'
+        else if tooltipSize.width + distance <= client.width - offset.left - targetSize.width
+          align = 'right'
+        else if tooltipSize.width + distance <= offset.left
+          align = 'left'
+        else if tooltipSize.height + distance <= client.height - offset.top = targetSize.height
+          align = 'bottom'
+        return align
+
+      align = getAlignment $target.offset(), getSize($tooltip), getSize($target), w
+
+      if not align and $target.is '[' + tooltipAlignAttribute + ']'
+        align = $target.attr tooltipAlignAttribute
+
+      if not align # then use the client size instead of window
+        align = getAlignment $target.offset(), getSize($tooltip), getSize($target), client
+
+      if not align # then wtf?
+        console.log 'wtf'
 
   class Tooltip
     init: (newSelector) ->
@@ -34,22 +83,3 @@ $ ()->
   window.lab.ui.tooltip = new Tooltip()
 
   lab.ui.tooltip.init()
-
-  $tooltip = $ '.tooltip'
-  defaultWidth = 300
-  tooltipWidth = defaultWidth
-  clientWidth = window.document.body.clientWidth
-  clientHeight = window.document.body.clientHeight
-
-  if clientWidth < defaultWidth # then correct the tooltip width
-    tooltipWidth = clientWidth
-    $tooltip.width tooltipWidth
-
-  # returns an object with two properties: width, height
-  getSize = (object)->
-    width:
-      object.width()
-    height:
-      object.height()
-
-  size = getSize $tooltip
