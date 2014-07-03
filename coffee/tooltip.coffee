@@ -6,16 +6,19 @@ $ ()->
   tooltipAlignAttribute = 'data-tooltip-align'
   defaultWidth = 300
   distance = 20
+  arrowSize = 10
   alignSet = ['top', 'right', 'left', 'bottom']
 
   # HTML factory
   generator =
     tooltip: '<div class="tooltip"><div class="content"></div></div>'
+    arrow: '<div class="arrow"></div>'
 
   create = (content)->
     $parent = $ 'body'
     $tooltip = $ generator.tooltip
     $tooltip.find('.content').html content
+    $tooltip.append generator.arrow
     $tooltip.appendTo $parent
     $tooltip.click leave
     # TODO: fade in animation
@@ -104,6 +107,26 @@ $ ()->
         return position
       position = calculateNewPosition containerSize
       $tooltip.offset position
+      calculateNewArrowPosition = ()->
+        position = {}
+        switch align
+          when 'top'
+            position.left = targetOffset.left + (targetSize.width / 2)
+            position.top = targetOffset.top - distance
+          when 'right'
+            position.left = targetOffset.left + targetSize.width + distance - arrowSize
+            position.top = targetOffset.top + (targetSize.height / 2)
+          when 'left'
+            targetYCenter = targetOffset.top + (targetSize.height / 2)
+            tooltipHalf =  tooltipSize.height / 2
+            position.left = targetOffset.left - distance
+            position.top = targetOffset.top + (targetSize.height / 2)
+          when 'bottom'
+            position.left = targetOffset.left + (targetSize.width / 2)
+            position.top = targetOffset.top + targetSize.height + distance - arrowSize
+        return position
+      position = calculateNewArrowPosition containerSize
+      $tooltip.find('.arrow').offset position
       console.log position
 
   class Tooltip
