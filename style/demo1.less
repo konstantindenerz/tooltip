@@ -1,23 +1,25 @@
+@target-bg: rgba(0, 0, 100, 1);
+
 .target {
   width: 140px;
   height: 60px;
-  background: rgba(0, 100, 0, 0.4);
+  background: @target-bg;
 }
 
 .demo1 {
   border: 1px dashed gray;
-  height: 400px;
+  // height: 400px;
   overflow:scroll;
   padding: 50px;
   .target {
-    margin: 350px 0;
+    // margin: 350px 0;
   }
 }
 
 .demo2 {
   margin: 10px 0;
   border: 1px dashed gray;
-  height: 400px;
+  // height: 400px;
   padding: 50px;
 
   .target {
