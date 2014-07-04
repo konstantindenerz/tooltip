@@ -1,11 +1,11 @@
 $ ()->
+  $('body').append(window.innerWidth);
   window.lab = window.lab or {}
   window.lab.ui = window.lab.ui or {}
   tooltipSelector = '.tooltip'
   tooltipContentSelector = '.tooltip-content'
   tooltipAlignAttribute = 'data-tooltip-align'
-  defaultWidth = 300
-  distance = 20
+  distance = 25
   arrowSize = 10
   alignSet = ['top', 'right', 'left', 'bottom']
 
@@ -28,10 +28,13 @@ $ ()->
     $content = $target.find tooltipContentSelector
     $tooltip = create $content.html()
     layout.update $tooltip, $target
+    $tooltip.fadeIn()
   leave = ()->
     $tooltip = $ tooltipSelector
-    # TODO: fade out animation
+    $tooltip.fadeOut()
     $tooltip.remove()
+
+  $(window).resize leave
 
   layout =
     update: ($tooltip, $target)->
@@ -41,9 +44,10 @@ $ ()->
       client =
         width: window.document.body.clientWidth
         height: window.document.body.clientHeight
-      tooltipWidth = defaultWidth
-      if client.width < defaultWidth # then correct the tooltip width
-        tooltipWidth = client.width
+      tooltipWidth = $tooltip.width() + 2 * distance
+      widthLimit = w.width - 2 * distance
+      if widthLimit <= tooltipWidth # then correct the tooltip width
+        tooltipWidth = widthLimit
         $tooltip.width tooltipWidth
       # returns an object with two properties: width, height
       getSize = (object)->
@@ -51,9 +55,8 @@ $ ()->
           object.width()
         height:
           object.height()
-      size =
+
       getAlignment = (tooltipSize, targetSize, targetOffset, containerSize)->
-        console.log tooltipSize, targetSize, targetOffset, containerSize
         align = undefined
         if tooltipSize.height + distance <= targetOffset.top
           align = 'top'
@@ -69,10 +72,13 @@ $ ()->
       tooltipSize = getSize $tooltip
       targetSize = getSize $target
       targetOffset = $target.offset()
-      align = getAlignment tooltipSize, targetSize, targetOffset, containerSize
+      align = undefined
 
       if not align and $target.is '[' + tooltipAlignAttribute + ']'
         align = $target.attr tooltipAlignAttribute
+
+      # if not align
+        #align = getAlignment tooltipSize, targetSize, targetOffset, containerSize
 
       if not align # then use the client size instead of window
         containerSize = client
@@ -81,13 +87,14 @@ $ ()->
       if not align # then wtf?
         align = 'bottom'
 
-      calculateNewPosition = ()->
+      calculateNewPosition = (tooltipSize, targetSize, targetOffset, containerSize)->
         position = {}
         switch align
           when 'top'
             targetXCenter = targetOffset.left + (targetSize.width / 2)
             tooltipHalf =  tooltipSize.width / 2
             position.left = Math.max distance, Math.min(containerSize.width - distance - tooltipSize.width, targetXCenter - tooltipHalf)
+
             position.top = targetOffset.top - tooltipSize.height - distance
           when 'right'
             targetYCenter = targetOffset.top + (targetSize.height / 2)
@@ -105,8 +112,9 @@ $ ()->
             position.left = Math.max distance, Math.min(containerSize.width - distance - tooltipSize.width, targetXCenter - tooltipHalf)
             position.top = targetOffset.top + targetSize.height + distance
         return position
-      position = calculateNewPosition containerSize
+      position = calculateNewPosition tooltipSize, targetSize, targetOffset, containerSize
       $tooltip.offset position
+
       calculateNewArrowPosition = ()->
         position = {}
         switch align
@@ -126,8 +134,11 @@ $ ()->
             position.top = targetOffset.top + targetSize.height + distance - arrowSize
         return position
       position = calculateNewArrowPosition containerSize
-      $tooltip.find('.arrow').offset position
-      console.log position
+      $arrow = $tooltip.find('.arrow');
+      for currentAlign in alignSet
+        do (currentAlign)-> $arrow.removeClass currentAlign
+      $arrow.offset position
+      $arrow.addClass align
 
   class Tooltip
     init: (newSelector) ->

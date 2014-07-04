@@ -1,14 +1,38 @@
+@tooltip-bg: #2c2c30;
+
 .tooltip {
-  background: #f2f2f2;
-  width: 300px;
+  background: @tooltip-bg;
+  color: darken(white, 10%);
+
   margin:0;
   position: absolute;
   z-index: 500000;
+
   .arrow {
-    background: red;
     position: absolute;
-    width: 10px;
-    height: 10px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+  }
+
+  .arrow.right {
+    border-width: 5px 10px 5px 0;
+    border-color: transparent @tooltip-bg transparent transparent;
+  }
+
+  .arrow.left {
+    border-width: 5px 0 5px 10px;
+    border-color: transparent transparent transparent @tooltip-bg;
+  }
+
+  .arrow.bottom {
+    border-width: 0 5px 10px 5px;
+    border-color: transparent transparent @tooltip-bg transparent;
+  }
+
+  .arrow.top {
+    border-width: 10px 5px 0 5px;
+    border-color: @tooltip-bg transparent transparent transparent;
   }
 }
 
