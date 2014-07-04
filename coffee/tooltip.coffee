@@ -131,14 +131,17 @@ $ ()->
             position.top = targetOffset.top + (targetSize.height / 2)
           when 'bottom'
             position.left = targetOffset.left + (targetSize.width / 2)
-            position.top = targetOffset.top + targetSize.height + distance - arrowSize
+            position.top = targetOffset.top + targetSize.height + distance - arrowSize + 1 # overlap
         return position
       position = calculateNewArrowPosition containerSize
       $arrow = $tooltip.find('.arrow');
       for currentAlign in alignSet
-        do (currentAlign)-> $arrow.removeClass currentAlign
+        do (currentAlign)->
+          $tooltip.removeClass currentAlign
+          $arrow.removeClass currentAlign
       $arrow.offset position
       $arrow.addClass align
+      $tooltip.addClass align
 
   class Tooltip
     init: (newSelector) ->

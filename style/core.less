@@ -2,8 +2,9 @@
 
 .tooltip {
   background: @tooltip-bg;
+  border: 1px solid rgba(170,170,170,0.4);
+  border-radius: 1px;
   color: darken(white, 10%);
-
   margin:0;
   position: absolute;
   z-index: 500000;
@@ -13,6 +14,7 @@
     width: 0;
     height: 0;
     border-style: solid;
+    z-index: 500001;
   }
 
   .arrow.right {
@@ -34,10 +36,27 @@
     border-width: 10px 5px 0 5px;
     border-color: @tooltip-bg transparent transparent transparent;
   }
+
+  .content {
+    padding: 10px;
+  }
 }
 
-.tooltip .content {
-  padding: 10px;
+.tooltip.top {
+    box-shadow: 0 -2px 15px rgba(0,0,0,0.4);
+}
+
+.tooltip.bottom {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+}
+
+.tooltip.right {
+
+    box-shadow:-5px 0 15px rgba(0,0,0,0.4);
+}
+
+.tooltip.left {
+    box-shadow:5px 0 15px rgba(0,0,0,0.4);
 }
 
 .tooltip-content {
