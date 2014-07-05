@@ -28,10 +28,9 @@ $ ()->
     $content = $target.find tooltipContentSelector
     $tooltip = create $content.html()
     layout.update $tooltip, $target
-    $tooltip.fadeIn()
+    $tooltip.addClass('animated fadeInDown')
   leave = ()->
     $tooltip = $ tooltipSelector
-    $tooltip.fadeOut()
     $tooltip.remove()
 
   $(window).resize leave
