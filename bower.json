@@ -1,10 +1,10 @@
 {
-  "name": "tooltip",
-  "version": "0.0.0",
+  "name": "tooltipjs",
+  "version": "0.0.1",
   "authors": [
     "konstantindenerz <konstantin.denerz+github@googlemail.com>"
   ],
-  "license": "mit",
+  "license": "MIT",
   "ignore": [
     "**/.*",
     "node_modules",
