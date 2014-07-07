@@ -1,5 +1,4 @@
 $ ()->
-  $('body').append(window.innerWidth);
   window.lab = window.lab or {}
   window.lab.ui = window.lab.ui or {}
   tooltipSelector = '.tooltip'
@@ -21,7 +20,6 @@ $ ()->
     $tooltip.append generator.arrow
     $tooltip.appendTo $parent
     $tooltip.click leave
-    # TODO: fade in animation
     $tooltip
   hover = ()->
     $target = $ this
