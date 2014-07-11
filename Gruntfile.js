@@ -27,17 +27,6 @@ module.exports = function(grunt) {
       }
     },
     less: {
-      development: {
-        options: {
-          paths: ["assets/css"],
-          compress: false,
-          cleancss: true
-        },
-        files: {
-          "dest/style/core.css": "style/core.less",
-          "dest/style/demo.css": "style/demo1.less"
-        }
-      },
       production: {
         options: {
           paths: ["assets/css"],
@@ -45,7 +34,7 @@ module.exports = function(grunt) {
           cleancss: true
         },
         files: {
-          "dest/style/core.css": "style/*.less"
+          "dest/style/tooltip.css": "style/*.less"
         }
       }
     },
@@ -79,7 +68,7 @@ module.exports = function(grunt) {
           join: true
         },
         files: {
-          'dest/scripts/core.js': ['coffee/*.coffee']
+          'dest/scripts/tooltip.js': ['coffee/*.coffee']
         }
       }
     }

@@ -1,4 +1,5 @@
 $ ()->
+  internalReferenceId = 0 # each target should have a reference id
   window.lab = window.lab or {}
   window.lab.ui = window.lab.ui or {}
   tooltipSelector = '.tooltip'
@@ -7,6 +8,17 @@ $ ()->
   distance = 25
   arrowSize = 10
   alignSet = ['top', 'right', 'left', 'bottom']
+  referenceAttribute = 'data-tooltip-ref'
+
+  checkTouchEvent = ()->
+    result = false
+    try
+      document.createEvent 'TouchEvent'
+      result = true
+    catch
+    return result
+
+  window.isTouchDevice = checkTouchEvent()
 
   # HTML factory
   generator =
@@ -25,13 +37,31 @@ $ ()->
     $target = $ this
     $content = $target.find tooltipContentSelector
     $tooltip = create $content.html()
+    currentReferenceId = -1
+    if not $target.attr referenceAttribute
+      currentReferenceId = internalReferenceId++
+      $target.attr referenceAttribute, currentReferenceId
+    else
+      currentReferenceId = $target.attr referenceAttribute
+    $tooltip.attr referenceAttribute, currentReferenceId
     layout.update $tooltip, $target
-    $tooltip.addClass('animated fadeInDown')
   leave = ()->
     $tooltip = $ tooltipSelector
     $tooltip.remove()
 
   $(window).resize leave
+  if window.isTouchDevice
+    $(document).bind 'touchstart', (e)->
+      $tooltip = $ tooltipSelector
+      currentReference = $tooltip.attr referenceAttribute
+      if currentReference
+        try
+          $target = $ e.target
+          currentTooltipReference = $target.attr referenceAttribute
+          if currentReference isnt currentTooltipReference
+            $tooltip.remove()
+        catch
+          $tooltip.remove()
 
   layout =
     update: ($tooltip, $target)->
@@ -139,13 +169,19 @@ $ ()->
       $arrow.offset position
       $arrow.addClass align
       $tooltip.addClass align
+      animationEffect = 'fadeInDown'
+      switch align
+        when 'bottom' then animationEffect = 'fadeInUp'
+        when 'left' then animationEffect = 'fadeInLeft'
+        when 'right' then animationEffect = 'fadeInRight'
+        else animationEffect = 'fadeInDown'
+      $tooltip.addClass "animated #{animationEffect}"
 
   class Tooltip
     init: (newSelector) ->
       selector = newSelector or '[data-tooltip]'
       $targets = $ selector
       $targets.hover hover, leave
-      return
 
   window.lab.ui.tooltip = new Tooltip()
 
