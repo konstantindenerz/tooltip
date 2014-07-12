@@ -148,7 +148,7 @@ $ ()->
         switch align
           when 'top'
             position.left = targetOffset.left + (targetSize.width / 2)
-            # position.top = targetOffset.top - distance + arrowSize
+            position.top = targetOffset.top - distance + arrowSize
           when 'right'
             position.left = targetOffset.left + targetSize.width + distance - arrowSize + 1 # overlap
             position.top = targetOffset.top + (targetSize.height / 2)
