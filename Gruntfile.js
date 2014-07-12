@@ -3,8 +3,22 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     watch: {
-      files: ['templates/**/*.jade', 'style/*.less', 'coffee/*.coffee'],
-      tasks: ['coffee', 'jade', 'less'],
+      content: {
+        files: ['templates/**/*.jade'],
+        tasks: ['jade']
+      },
+      scripts: {
+        files: ['coffee/**/*.coffee'],
+        tasks: ['coffee']
+      },
+      style: {
+        files: ['style/**/*.less'],
+        tasks: ['less']
+      },
+      assets: {
+        files: ['assets/**/*'],
+        tasks: ['copy']
+      },
       options: { livereload: true },
       livereload: {
         // Here we watch the files the sass task will compile to
@@ -27,6 +41,17 @@ module.exports = function(grunt) {
       }
     },
     less: {
+      development: {
+        options: {
+          paths: ["assets/css"],
+          compress: false,
+          cleancss: true
+        },
+        files: {
+          "dest/style/tooltip.css": "style/core.less",
+          "dest/style/demo.css": "style/demo*.less"
+        }
+      },
       production: {
         options: {
           paths: ["assets/css"],
@@ -34,7 +59,8 @@ module.exports = function(grunt) {
           cleancss: true
         },
         files: {
-          "dest/style/tooltip.css": "style/*.less"
+          "dest/style/tooltip.css": "style/core.less",
+          "dest/style/demo.css": "style/demo*.less"
         }
       }
     },

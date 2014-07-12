@@ -1,5 +1,5 @@
 @tooltip-bg: #2c2c30;
-
+@tooltip-bg-light: white;
 .tooltip {
   background: @tooltip-bg;
   border: 1px solid rgba(170,170,170,0.4);
@@ -40,6 +40,30 @@
   .content {
     padding: 10px;
   }
+}
+
+.tooltip.light {
+  background: #f5f5f5;
+  border: 1px solid #fafafa;
+  color: #646464;
+
+  .arrow.right {
+    border-color: transparent @tooltip-bg-light transparent transparent;
+  }
+
+  .arrow.left {
+    border-color: transparent transparent transparent @tooltip-bg-light;
+  }
+
+  .arrow.bottom {
+    border-color: transparent transparent @tooltip-bg-light transparent;
+  }
+
+  .arrow.top {
+    border-width: 10px 5px 0 5px;
+    border-color: @tooltip-bg-light transparent transparent transparent;
+  }
+
 }
 
 .tooltip.top {

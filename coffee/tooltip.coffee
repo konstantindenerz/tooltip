@@ -44,6 +44,7 @@ $ ()->
     else
       currentReferenceId = $target.attr referenceAttribute
     $tooltip.attr referenceAttribute, currentReferenceId
+    $tooltip.addClass $target.attr 'data-tooltip'
     layout.update $tooltip, $target
   leave = ()->
     $tooltip = $ tooltipSelector
@@ -147,9 +148,9 @@ $ ()->
         switch align
           when 'top'
             position.left = targetOffset.left + (targetSize.width / 2)
-            position.top = targetOffset.top - distance + arrowSize
+            # position.top = targetOffset.top - distance + arrowSize
           when 'right'
-            position.left = targetOffset.left + targetSize.width + distance - arrowSize
+            position.left = targetOffset.left + targetSize.width + distance - arrowSize + 1 # overlap
             position.top = targetOffset.top + (targetSize.height / 2)
           when 'left'
             targetYCenter = targetOffset.top + (targetSize.height / 2)
