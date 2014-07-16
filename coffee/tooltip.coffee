@@ -2,7 +2,7 @@ $ ()->
   internalReferenceId = 0 # each target should have a reference id
   window.lab = window.lab or {}
   window.lab.ui = window.lab.ui or {}
-  tooltipSelector = '.tooltip'
+  tooltipSelector = '.lab-tooltip'
   tooltipContentSelector = '.tooltip-content'
   tooltipAlignAttribute = 'data-tooltip-align'
   distance = 25
@@ -22,7 +22,7 @@ $ ()->
 
   # HTML factory
   generator =
-    tooltip: '<div class="tooltip"><div class="content"></div></div>'
+    tooltip: '<div class="lab-tooltip"><div class="content"></div></div>'
     arrow: '<div class="arrow"></div>'
 
   create = (content)->
@@ -81,9 +81,9 @@ $ ()->
       getSize = (object)->
         result =
           width:
-            object.width()
+            Math.max object.width(), parseInt(object.css 'width')
           height:
-            object.height()
+            Math.max object.height(), parseInt(object.css 'height')
 
         if result.width is 0 and result.height is 0 and typeof getCustomSize is 'function'
           result=getCustomSize object
