@@ -9,7 +9,7 @@ $ ()->
   arrowSize = 10
   alignSet = ['top', 'right', 'left', 'bottom']
   referenceAttribute = 'data-tooltip-ref'
-
+  getCustomSize = null
   checkTouchEvent = ()->
     result = false
     try
@@ -44,6 +44,7 @@ $ ()->
     else
       currentReferenceId = $target.attr referenceAttribute
     $tooltip.attr referenceAttribute, currentReferenceId
+    $tooltip.addClass $target.attr 'data-tooltip'
     layout.update $tooltip, $target
   leave = ()->
     $tooltip = $ tooltipSelector
@@ -78,10 +79,15 @@ $ ()->
         $tooltip.width tooltipWidth
       # returns an object with two properties: width, height
       getSize = (object)->
-        width:
-          object.width()
-        height:
-          object.height()
+        result =
+          width:
+            object.width()
+          height:
+            object.height()
+
+        if result.width is 0 and result.height is 0 and typeof getCustomSize is 'function'
+          result=getCustomSize object
+        result
 
       getAlignment = (tooltipSize, targetSize, targetOffset, containerSize)->
         align = undefined
@@ -147,9 +153,9 @@ $ ()->
         switch align
           when 'top'
             position.left = targetOffset.left + (targetSize.width / 2)
-            position.top = targetOffset.top - distance + arrowSize
+            position.top = targetOffset.top - distance
           when 'right'
-            position.left = targetOffset.left + targetSize.width + distance - arrowSize
+            position.left = targetOffset.left + targetSize.width + distance - arrowSize + 1 # overlap
             position.top = targetOffset.top + (targetSize.height / 2)
           when 'left'
             targetYCenter = targetOffset.top + (targetSize.height / 2)
@@ -178,7 +184,8 @@ $ ()->
       $tooltip.addClass "animated #{animationEffect}"
 
   class Tooltip
-    init: (newSelector) ->
+    init: (newSelector, getSize) ->
+      getCustomSize = getSize
       selector = newSelector or '[data-tooltip]'
       $targets = $ selector
       $targets.hover hover, leave
