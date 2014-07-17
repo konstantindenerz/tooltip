@@ -36,7 +36,8 @@ $ ()->
   hover = ()->
     $target = $ this
     $content = $target.find tooltipContentSelector
-    $tooltip = create $content.html()
+    content = $content.html() or $content.text() # html() does not work in different browsers on different elements
+    $tooltip = create content
     currentReferenceId = -1
     if not $target.attr referenceAttribute
       currentReferenceId = internalReferenceId++
@@ -77,6 +78,22 @@ $ ()->
       if widthLimit <= tooltipWidth # then correct the tooltip width
         tooltipWidth = widthLimit
         $tooltip.width tooltipWidth
+      # calculate the max width to prevent overlaps
+      alignDefinition = $target.attr tooltipAlignAttribute
+      maxWidth = 0
+      if alignDefinition
+        switch alignDefinition
+          when 'top'
+            maxWidth = window.innerWidth - 2 * distance
+          when 'right'
+            maxWidth = window.innerWidth - $target.offset().left - $target.width - 2 * distance
+          when 'left'
+            maxWidth = $target.offset().left - 2 * distance
+          when 'bottom'
+            maxWidth = window.innerWidth - 2 * distance
+      if maxWidth isnt 0
+        $tooltip.css 'max-width', maxWidth
+
       # returns an object with two properties: width, height
       getSize = (object)->
         result =
@@ -110,8 +127,8 @@ $ ()->
       if not align and $target.is '[' + tooltipAlignAttribute + ']'
         align = $target.attr tooltipAlignAttribute
 
-      # if not align
-        #align = getAlignment tooltipSize, targetSize, targetOffset, containerSize
+      if not align
+        align = getAlignment tooltipSize, targetSize, targetOffset, containerSize
 
       if not align # then use the client size instead of window
         containerSize = client
@@ -153,14 +170,14 @@ $ ()->
         switch align
           when 'top'
             position.left = targetOffset.left + (targetSize.width / 2)
-            position.top = targetOffset.top - distance
+            position.top = targetOffset.top - distance - 1 # overlap
           when 'right'
             position.left = targetOffset.left + targetSize.width + distance - arrowSize + 1 # overlap
             position.top = targetOffset.top + (targetSize.height / 2)
           when 'left'
             targetYCenter = targetOffset.top + (targetSize.height / 2)
             tooltipHalf =  tooltipSize.height / 2
-            position.left = targetOffset.left - distance
+            position.left = targetOffset.left - distance - 1 # overlap
             position.top = targetOffset.top + (targetSize.height / 2)
           when 'bottom'
             position.left = targetOffset.left + (targetSize.width / 2)
@@ -191,5 +208,3 @@ $ ()->
       $targets.hover hover, leave
 
   window.lab.ui.tooltip = new Tooltip()
-
-  lab.ui.tooltip.init()

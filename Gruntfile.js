@@ -94,7 +94,8 @@ module.exports = function(grunt) {
           join: true
         },
         files: {
-          'dest/scripts/tooltip.js': ['coffee/*.coffee']
+          'dest/scripts/tooltip.js': ['coffee/tooltip.coffee'],
+          'dest/scripts/demo.js': ['coffee/demo.coffee']
         }
       }
     }
